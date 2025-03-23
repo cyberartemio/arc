@@ -50,7 +50,7 @@ onMounted(() => {
     api.getStatus((err, data) => {
       if (err) {
         latency.value = "-"
-        if (err.code == 403)
+        if (err.status == 403)
           router.push({ path: "/login" })
         else {
           // TODO: show offline banner
