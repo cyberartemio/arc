@@ -23,8 +23,8 @@ class Api {
 
   login(username, password, callback) {
     this.post("/auth", { username: username, password: password }, this.axiosConfig())
-      .then((data) => {
-        callback(null, data.data.token)
+      .then((response) => {
+        callback(null, response.data.token)
       })
       .catch((err) => {
         callback(err)
