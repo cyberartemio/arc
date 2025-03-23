@@ -1,5 +1,5 @@
 <template>
-  <v-toolbar extended>
+  <v-app-bar extended>
     <v-toolbar-title text="Arc">
       <div class="ml-3 d-sm-inline text-caption">(latency {{ latency }}ms)</div>
     </v-toolbar-title>
@@ -12,16 +12,35 @@
       </v-tabs>
     </template>
     <template v-slot:append>
-      <v-btn v-if="unreadNotifications > 0" icon="mdi-bell-outline">
+      <v-btn v-if="unreadNotifications > 0" icon="mdi-bell-outline" @click.stop="toggleEventsDrawer">
         <v-badge color="error" :content="unreadNotifications < 10 ? unreadNotifications : '9+'">
           <v-icon>mdi-bell-outline</v-icon>
         </v-badge>
       </v-btn>
-      <v-btn v-else icon="mdi-bell-outline"></v-btn>
+      <v-btn v-else icon="mdi-bell-outline" @click.stop="toggleEventsDrawer"></v-btn>
 
       <v-btn icon="mdi-logout" @click="logout"></v-btn>
     </template>
-  </v-toolbar>
+  </v-app-bar>
+
+  <!-- events drawer  -->
+  <v-navigation-drawer :width="400" v-model="eventsDrawer" :location="$vuetify.display.mobile ? 'bottom' : 'right'"
+    temporary>
+    <v-container class="pa-4">
+      <v-list class="pa-0 mb-4" lines="two">
+        <v-list-subheader style="padding-left: 0!important;">Events</v-list-subheader>
+
+        <v-virtual-scroll :items="notifications">
+          <template v-slot:default="{ item }">
+            <v-list-item class="px-0">
+              <v-list-item-title>{{ item.Title }}</v-list-item-title>
+              <v-list-item-subtitle><span v-html="item.Description"></span></v-list-item-subtitle>
+            </v-list-item>
+          </template>
+        </v-virtual-scroll>
+      </v-list>
+    </v-container>
+  </v-navigation-drawer>
 </template>
 
 <script setup>
@@ -34,10 +53,20 @@ const statusCheckInterval = 1 * 1000 // check status every 1s
 const latency = ref("-")
 const unreadNotifications = ref(0)
 const notifications = ref([])
+const eventsDrawer = ref(false)
 
 const logout = () => {
   router.push({ path: "/login" })
   api.token = ""
+}
+
+const toggleEventsDrawer = () => {
+  if (eventsDrawer.value)
+    eventsDrawer.value = false
+  else {
+    eventsDrawer.value = true
+    unreadNotifications.value = false
+  }
 }
 
 let statusInterval
@@ -60,8 +89,12 @@ onMounted(() => {
         latency.value = Date.now() - timecheck
         for (let notification of data.events) {
           if (!notifications.value.some(n => n.Name == notification.Name && n.Time == notification.Time)) {
+            if (!eventsDrawer.value)
+              unreadNotifications.value = unreadNotifications.value + 1
+            else
+              unreadNotifications.value = 0
+
             notifications.value.push(notification)
-            unreadNotifications.value = unreadNotifications.value + 1
           }
         }
       }
