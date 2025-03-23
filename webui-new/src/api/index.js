@@ -5,21 +5,31 @@ class Api {
     this.baseUrl = baseUrl
     this.token = token
   }
-  get(endpoint) {
-    return axios.get(this.baseUrl + endpoint)
+  axiosConfig(authenticated) {
+    const headers = {}
+    if (authenticated)
+      headers["Authorization"] = "Bearer: " + this.token
+    return {
+      headers
+    }
+  }
+  get(endpoint, authenticated = false) {
+    return axios.get(this.baseUrl + endpoint, this.axiosConfig(authenticated))
   }
 
-  post(endpoint, data) {
+  post(endpoint, data, authenticated = false) {
     return axios.post(this.baseUrl + endpoint, data)
   }
 
   login(username, password, callback) {
-    this.post("/auth", { username: username, password: password })
+    this.post("/auth", { username: username, password: password }, this.axiosConfig())
       .then((data) => {
         callback(null, data.data.token)
       })
-      .catch((error) => {
-        callback(error)
+      .catch((err) => {
+        callback(err)
+      })
+  }
       })
   }
 }
