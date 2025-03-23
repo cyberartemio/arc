@@ -2,5 +2,4 @@
 </template>
 
 <script setup>
-
 </script>

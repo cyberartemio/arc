@@ -30,6 +30,15 @@ class Api {
         callback(err)
       })
   }
+
+  getStatus(callback) {
+    this.get("/api/status", true)
+      .then((response) => {
+        callback(null, response.data)
+      })
+      .catch((err) => {
+        console.log(err)
+        callback(err, null)
       })
   }
 }
