@@ -14,7 +14,9 @@ import App from './App.vue'
 import { createApp } from 'vue'
 
 const app = createApp(App)
-
+const pageTitle = ref("")
 registerPlugins(app)
+
+app.provide('pageTitle', pageTitle)
 
 app.mount('#app')

@@ -44,9 +44,12 @@
 <script setup>
 import { inject } from 'vue'
 import { useRouter } from 'vue-router'
+
 const router = useRouter()
 const api = inject('api')
+const pageTitle = inject('pageTitle')
 
+pageTitle.value = "Login"
 const auth = ref({
   username: "",
   password: "",
@@ -67,7 +70,6 @@ const login = () => {
     }
     else {
       api.token = token
-
       // TODO: if remember me, save token into localStorage
       // TODO: set encryption key
       router.push({ path: "/" })
