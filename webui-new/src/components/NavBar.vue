@@ -15,11 +15,24 @@
       <v-btn v-if="unreadNotifications > 0" icon="mdi-bell-outline" @click.stop="toggleEventsDrawer">
         <v-badge color="error" :content="unreadNotifications < 10 ? unreadNotifications : '9+'">
           <v-icon>mdi-bell-outline</v-icon>
+          <v-tooltip activator="parent" location="left">
+            Events
+          </v-tooltip>
         </v-badge>
       </v-btn>
-      <v-btn v-else icon="mdi-bell-outline" @click.stop="toggleEventsDrawer"></v-btn>
+      <v-btn v-else icon="mdi-bell-outline" @click.stop="toggleEventsDrawer">
+        <v-icon>mdi-bell-outline</v-icon>
+        <v-tooltip activator="parent" location="left">
+          Events
+        </v-tooltip>
+      </v-btn>
 
-      <v-btn icon="mdi-logout" @click="logout"></v-btn>
+      <v-btn icon="mdi-logout" @click="logout">
+        <v-icon>mdi-logout</v-icon>
+        <v-tooltip activator="parent" location="left">
+          Logout
+        </v-tooltip>
+      </v-btn>
     </template>
   </v-app-bar>
 
