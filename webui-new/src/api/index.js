@@ -18,7 +18,11 @@ class Api {
   }
 
   post(endpoint, data, authenticated = false) {
-    return axios.post(this.baseUrl + endpoint, data)
+    return axios.post(this.baseUrl + endpoint, data, this.axiosConfig(authenticated))
+  }
+
+  delete(endpoint, authenticated = false) {
+    return axios.delete(this.baseUrl + endpoint, this.axiosConfig(authenticated))
   }
 
   login(username, password, callback) {
@@ -28,6 +32,26 @@ class Api {
       })
       .catch((err) => {
         callback(err)
+      })
+  }
+
+  getStores(callback) {
+    this.get("/api/stores", true)
+      .then((response) => {
+        callback(null, response.data)
+      })
+      .catch((err) => {
+        callback(err, null)
+      })
+  }
+
+  deleteStore(id, callback) {
+    this.delete("/api/store/" + id, true)
+      .then((response) => {
+        callback(null, response.data)
+      })
+      .catch((err) => {
+        callback(err, null)
       })
   }
 
