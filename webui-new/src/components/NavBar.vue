@@ -54,6 +54,11 @@
       </v-list>
     </v-container>
   </v-navigation-drawer>
+
+  <!-- global snackbar -->
+  <v-snackbar v-model="showSnackbar" class="cursor-pointer" :timeout="5000" color="primary" rounded="pill"
+    @click="showSnackbar = false">{{
+      snackbarText }}</v-snackbar>
 </template>
 
 <script setup>
@@ -61,6 +66,8 @@ import { inject, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 const router = useRouter()
 const api = inject('api')
+const snackbarText = inject('snackbarText')
+const showSnackbar = inject('showSnackbar')
 
 const statusCheckInterval = 1 * 1000 // check status every 1s
 const latency = ref("-")
