@@ -5,7 +5,7 @@
       text="Removing the store will permanently delete it from system disk and you won't be able to recover it, unless you have backed it up on another device."
       title="Remove this store?">
       <template v-slot:actions>
-        <v-btn class="ms-auto" text="Cancel" @click="showErrorModal = false"></v-btn>
+        <v-btn class="ms-auto" text="Cancel" @click="showDeletionConfirmationModal = false"></v-btn>
         <v-btn class="ms-auto" text="Confirm" @click="deleteStore()"></v-btn>
       </template>
     </v-card>
