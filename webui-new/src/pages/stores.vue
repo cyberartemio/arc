@@ -35,7 +35,7 @@
 </template>
 
 <script setup>
-import { inject, onMounted } from 'vue'
+import { inject, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 const router = useRouter()
 const api = inject('api')
@@ -48,6 +48,7 @@ pageTitle.value = "Stores"
 const stores = ref([])
 const showDeletionConfirmationModal = ref(false)
 const storeToDelete = ref(-1)
+let storeInterval
 
 const getStores = () => {
   api.getStores((err, data) => {
@@ -99,5 +100,10 @@ const confirmDeletion = (id) => {
 
 onMounted(() => {
   getStores()
+  storeInterval = setInterval(getStores, 5000)
+})
+
+onUnmounted(() => {
+  clearInterval(storeInterval)
 })
 </script>
