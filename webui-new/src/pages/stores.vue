@@ -1,4 +1,23 @@
 <template>
+  <!-- [modal] for store creation/update -->
+  <v-dialog v-model="showStoreModal" width="auto">
+    <v-card rounded="lg" max-width="400" prepend-icon="mdi-pencil"
+      :title="modalStoreId == -1 ? 'Add new store' : 'Edit store'">
+      <v-card-text>
+        <p class="mt-1"><em>The name of the store is saved in cleartext on system disk and will be visible even
+            when using different encryption keys.</em></p>
+        <v-form class="mt-5">
+          <!-- TODO: add empty fields checks -->
+          <v-text-field min-width="300" prepend-inner-icon="mdi-database" v-model="modalStoreTitle"
+            placeholder="Enter store title" label="Store title"></v-text-field>
+        </v-form>
+      </v-card-text>
+      <template v-slot:actions>
+        <v-btn class="ms-auto" text="Cancel" @click="showStoreModal = false"></v-btn>
+        <v-btn class="ms-auto" text="Save" @click="addNewStore()"></v-btn>
+      </template>
+    </v-card>
+  </v-dialog>
   <!-- [modal] for store deletion -->
   <v-dialog v-model="showDeletionConfirmationModal" width="auto">
     <v-card max-width="400" prepend-icon="mdi-alert"
@@ -10,13 +29,22 @@
       </template>
     </v-card>
   </v-dialog>
-  <v-container class="fill-height">
+
+  <!-- main body -->
+  <v-container>
+    <v-row justify="center">
+      <v-col cols="2">
+        <v-btn @click="editStore()">
+          Add new store
+        </v-btn>
+      </v-col>
+    </v-row>
     <v-row>
-      <v-col sm="12" lg="4" md="6" v-for="store in stores">
+      <v-col sm="12" lg="4" md="6" xl="3" v-for="store in stores">
         <v-card class="py-4" color="primary" :title="store.title" prepend-icon="mdi-database" rounded="lg">
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="" icon="mdi-pencil" size="small">
+            <v-btn color="" icon="mdi-pencil" size="small" @click="editStore(store.id)">
               <v-icon>mdi-pencil</v-icon>
               <v-tooltip activator="parent" location="bottom">
                 Edit
@@ -30,7 +58,9 @@
             </v-btn>
           </v-card-actions>
         </v-card>
-      </v-col> </v-row> </v-container>
+      </v-col>
+    </v-row>
+  </v-container>
 
 </template>
 
@@ -48,6 +78,9 @@ pageTitle.value = "Stores"
 const stores = ref([])
 const showDeletionConfirmationModal = ref(false)
 const storeToDelete = ref(-1)
+const showStoreModal = ref(false)
+const modalStoreId = ref(null)
+const modalStoreTitle = ref("")
 let storeInterval
 
 const getStores = () => {
@@ -62,7 +95,6 @@ const getStores = () => {
     }
     else {
       stores.value = data
-      console.log(data)
       /*
       for(const store of stores) {
         k
@@ -72,8 +104,45 @@ const getStores = () => {
   })
 }
 
-const addNewStore = () => {
+const editStore = (id) => {
+  if (isNaN(id)) {
+    modalStoreId.value = -1
+    modalStoreTitle.value = ""
+  }
+  else {
+    modalStoreId.value = id
+    modalStoreTitle.value = stores.value.filter(s => s.id == id)[0].title
+  }
+  showStoreModal.value = true
+}
 
+const addNewStore = () => {
+  if (modalStoreId.value == -1) {
+    api.addStore(modalStoreTitle.value, (err, store) => {
+      if (err) {
+        console.log(err)
+      }
+      else {
+        stores.value.push(store)
+        showStoreModal.value = false
+        snackbarText.value = "Store added."
+        showSnackbar.value = true
+      }
+    })
+  }
+  else {
+    api.editStore(modalStoreId.value, modalStoreTitle.value, (err, response) => {
+      if (err) {
+        console.log(err)
+      }
+      else {
+        stores.value[stores.value.map(s => s.id).indexOf(modalStoreId.value)].title = modalStoreTitle.value
+        showStoreModal.value = false
+        snackbarText.value = response.msg
+        showSnackbar.value = true
+      }
+    })
+  }
 }
 
 const deleteStore = () => {

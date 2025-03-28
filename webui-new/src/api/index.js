@@ -21,6 +21,10 @@ class Api {
     return axios.post(this.baseUrl + endpoint, data, this.axiosConfig(authenticated))
   }
 
+  put(endpoint, data, authenticated = false) {
+    return axios.put(this.baseUrl + endpoint, data, this.axiosConfig(authenticated))
+  }
+
   delete(endpoint, authenticated = false) {
     return axios.delete(this.baseUrl + endpoint, this.axiosConfig(authenticated))
   }
@@ -37,6 +41,26 @@ class Api {
 
   getStores(callback) {
     this.get("/api/stores", true)
+      .then((response) => {
+        callback(null, response.data)
+      })
+      .catch((err) => {
+        callback(err, null)
+      })
+  }
+
+  addStore(title, callback) {
+    this.post("/api/stores", { Title: title }, true)
+      .then((response) => {
+        callback(null, response.data)
+      })
+      .catch((err) => {
+        callback(err, null)
+      })
+  }
+
+  editStore(id, title, callback) {
+    this.put("/api/store/" + id, { ID: id, Title: title }, true)
       .then((response) => {
         callback(null, response.data)
       })
