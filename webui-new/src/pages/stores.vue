@@ -34,7 +34,7 @@
   <!-- main body -->
   <v-container>
     <v-row justify="center">
-      <v-col cols="2">
+      <v-col class="d-flex justify-center" cols="12">
         <v-btn color="primary" prepend-icon="mdi-database-plus" @click="editStore()">
           New store
         </v-btn>
