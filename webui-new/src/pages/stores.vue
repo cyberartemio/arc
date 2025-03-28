@@ -45,6 +45,12 @@
         <v-card class="py-4" color="primary" :title="store.title" prepend-icon="mdi-database" rounded="lg">
           <v-card-actions>
             <v-spacer></v-spacer>
+            <v-btn color="" icon="mdi-file-document-multiple" size="small" onclick="alert('Not available right now')">
+              <v-icon>mdi-file-document-multiple</v-icon>
+              <v-tooltip activator="parent" location="bottom">
+                Duplicate
+              </v-tooltip>
+            </v-btn>
             <v-btn color="" icon="mdi-pencil" size="small" @click="editStore(store.id)">
               <v-icon>mdi-pencil</v-icon>
               <v-tooltip activator="parent" location="bottom">
