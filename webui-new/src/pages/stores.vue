@@ -1,7 +1,7 @@
 <template>
   <!-- [modal] for store creation/update -->
   <v-dialog v-model="showStoreModal" width="auto">
-    <v-card rounded="lg" max-width="400" prepend-icon="mdi-pencil"
+    <v-card rounded="lg" max-width="400" :prepend-icon="modalStoreId == -1 ? 'mdi-database-plus' : 'mdi-database-edit'"
       :title="modalStoreId == -1 ? 'Add new store' : 'Edit store'">
       <v-card-text>
         <p class="mt-1"><em>The name of the store is saved in cleartext on system disk and will be visible even
@@ -18,9 +18,10 @@
       </template>
     </v-card>
   </v-dialog>
+
   <!-- [modal] for store deletion -->
   <v-dialog v-model="showDeletionConfirmationModal" width="auto">
-    <v-card max-width="400" prepend-icon="mdi-alert"
+    <v-card max-width="400" prepend-icon="mdi-database-remove"
       text="Removing the store will permanently delete it from system disk and you won't be able to recover it, unless you have backed it up on another device."
       title="Remove this store?">
       <template v-slot:actions>
@@ -34,8 +35,8 @@
   <v-container>
     <v-row justify="center">
       <v-col cols="2">
-        <v-btn @click="editStore()">
-          Add new store
+        <v-btn color="primary" prepend-icon="mdi-database-plus" @click="editStore()">
+          New store
         </v-btn>
       </v-col>
     </v-row>
