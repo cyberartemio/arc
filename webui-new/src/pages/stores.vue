@@ -77,17 +77,16 @@ const addNewStore = () => {
 }
 
 const deleteStore = () => {
-  api.deleteStore(storeToDelete.value, (err, data) => {
+  api.deleteStore(storeToDelete.value, (err, response) => {
     if (err) {
       console.log(err)
       console.log("error while deleting store")
     }
     else {
-      console.log(data)
       const elementIndex = stores.value.map(s => s.id).indexOf(storeToDelete.value)
       stores.value.splice(elementIndex, 1)
       showDeletionConfirmationModal.value = false
-      snackbarText.value = "Store succesfully deleted"
+      snackbarText.value = response.msg
       showSnackbar.value = true
     }
   })
