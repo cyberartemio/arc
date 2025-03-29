@@ -79,6 +79,16 @@ class Api {
       })
   }
 
+  getRecords(store, callback) {
+    this.get("/api/store/" + store + "/records", true)
+      .then((response) => {
+        callback(null, response.data)
+      })
+      .catch((err) => {
+        callback(err, null)
+      })
+  }
+
   getStatus(callback) {
     this.get("/api/status", true)
       .then((response) => {
