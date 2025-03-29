@@ -102,7 +102,6 @@ const duplicateStore = (id, event) => {
 const getStores = () => {
   api.getStores((err, data) => {
     if (err) {
-      latency.value = "-"
       if (err.status == 403)
         router.push({ path: "/login" })
       else {
