@@ -26,7 +26,7 @@
       title="Remove this store?">
       <template v-slot:actions>
         <v-btn class="ms-auto" text="Cancel" @click="showDeletionConfirmationModal = false"></v-btn>
-        <v-btn class="ms-auto" text="Confirm" @click="deleteStore()"></v-btn>
+        <v-btn class="ms-auto" text="Confirm" @click="confirmDeletion()"></v-btn>
       </template>
     </v-card>
   </v-dialog>
@@ -42,22 +42,23 @@
     </v-row>
     <v-row>
       <v-col sm="12" lg="4" md="6" xl="3" v-for="store in stores">
-        <v-card class="py-4" color="primary" :title="store.title" prepend-icon="mdi-database" rounded="lg">
+        <v-card @click="goToRecordsList(store.id)" class="py-4" color="primary" :title="store.title"
+          prepend-icon="mdi-database" rounded="lg">
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="" icon="mdi-file-document-multiple" size="small" onclick="alert('Not available right now')">
+            <v-btn color="" icon="mdi-file-document-multiple" size="small" @click="duplicateStore(store.id, $event)">
               <v-icon>mdi-file-document-multiple</v-icon>
               <v-tooltip activator="parent" location="bottom">
                 Duplicate
               </v-tooltip>
             </v-btn>
-            <v-btn color="" icon="mdi-pencil" size="small" @click="editStore(store.id)">
+            <v-btn color="" icon="mdi-pencil" size="small" @click="editStore(store.id, $event)">
               <v-icon>mdi-pencil</v-icon>
               <v-tooltip activator="parent" location="bottom">
                 Edit
               </v-tooltip>
             </v-btn>
-            <v-btn color="" icon="mdi-delete" size="small" @click="confirmDeletion(store.id)">
+            <v-btn color="" icon="mdi-delete" size="small" @click="deleteStore(store.id, $event)">
               <v-icon>mdi-delete</v-icon>
               <v-tooltip activator="parent" location="bottom">
                 Delete
@@ -68,7 +69,6 @@
       </v-col>
     </v-row>
   </v-container>
-
 </template>
 
 <script setup>
@@ -89,6 +89,15 @@ const showStoreModal = ref(false)
 const modalStoreId = ref(null)
 const modalStoreTitle = ref("")
 let storeInterval
+
+const goToRecordsList = (id) => {
+  router.push({ path: "/stores/" + id })
+}
+
+const duplicateStore = (id, event) => {
+  event.stopPropagation()
+  alert('Not available right now')
+}
 
 const getStores = () => {
   api.getStores((err, data) => {
@@ -111,7 +120,9 @@ const getStores = () => {
   })
 }
 
-const editStore = (id) => {
+const editStore = (id, event) => {
+  if (event)
+    event.stopPropagation()
   if (isNaN(id)) {
     modalStoreId.value = -1
     modalStoreTitle.value = ""
@@ -152,7 +163,7 @@ const addNewStore = () => {
   }
 }
 
-const deleteStore = () => {
+const confirmDeletion = () => {
   api.deleteStore(storeToDelete.value, (err, response) => {
     if (err) {
       console.log(err)
@@ -168,7 +179,8 @@ const deleteStore = () => {
   })
 }
 
-const confirmDeletion = (id) => {
+const deleteStore = (id, event) => {
+  event.stopPropagation()
   showDeletionConfirmationModal.value = true
   storeToDelete.value = id
 }
